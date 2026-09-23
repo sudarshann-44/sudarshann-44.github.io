@@ -1,381 +1,392 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="Sudarshan Sawandkar — Full Stack Developer portfolio" />
-  <meta name="author" content="Sudarshan Sawandkar" />
-  <link rel="icon" href="assets/logo.png" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Sudarshan Sawandkar</title>
-
-  <!-- Tailwind + FontAwesome -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://kit.fontawesome.com/a2d04b3e1e.js" crossorigin="anonymous"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+  <link rel="icon" href="assets/face.jpg" />
   <style>
     :root {
-      --accent: #0f766e;
-      --bg: #fafaf6;
+      --bg: #09090b;
+      --fg: #fafafa;
+      --muted: #71717a;
+      --line: #27272a;
+      --accent: #818cf8;
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
     }
 
-    html {
-      scroll-behavior: smooth;
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      background: var(--bg);
     }
 
     body {
-      background-color: var(--bg);
-      color: #1e293b;
-      font-family: 'Inter', sans-serif;
-    }
-
-    /* Animations */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .fade-up.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .slide-in {
-      opacity: 0;
-      transform: translateX(-40px);
-      transition: all 0.8s ease-in-out;
-    }
-
-    .slide-in.visible {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    .hover-bounce {
-      transition: transform 0.25s ease;
-    }
-
-    .hover-bounce:hover {
-      transform: translateY(-3px) scale(1.03);
-    }
-
-    .social-icon {
-      @apply w-10 h-10 flex items-center justify-center rounded-full bg-white shadow hover:bg-teal-600 hover:text-white transition;
-    }
-
-    /* Timeline */
-    .timeline {
-      position: relative;
-      margin: 0 auto;
-      max-width: 800px;
-      padding-left: 20px;
-    }
-
-    .timeline::before {
-      content: "";
-      position: absolute;
-      left: 51.2%;
-      transform: translateX(-50%);
-      width: 4px;
-      height: 0;
-      background: linear-gradient(to bottom, #2dd4bf, #0d9488);
-      border-radius: 2px;
-      transition: height 1s ease-out;
-    }
-
-    .timeline.fill::before {
-      height: 100%;
-    }
-
-    .timeline-item {
-      position: relative;
-      width: 50%;
-      padding: 20px 30px;
-    }
-
-    .timeline-item::before {
-      content: "";
-      position: absolute;
-      top: 25px;
-      right: -8px;
-      width: 16px;
-      height: 16px;
-      background: #0d9488;
-      border-radius: 50%;
-      box-shadow: 0 0 15px rgba(13, 148, 136, 0.5);
-    }
-
-    .timeline-item:nth-child(even) {
-      left: 50%;
-    }
-
-    .timeline-item:nth-child(even)::before {
-      left: -8px;
-      right: auto;
-    }
-
-    /* Mobile fix */
-    @media (max-width: 768px) {
-      .timeline::before {
-        left: 25px;
-        transform: none;
-      }
-
-      .timeline-item {
-        width: 100%;
-        left: 0 !important;
-        padding-left: 50px;
-        margin-bottom: 30px;
-      }
-
-      .timeline-item::before {
-        left: 0 !important;
-      }
-
-      .timeline-item:nth-child(even) {
-        left: 0 !important;
-      }
-
-      .timeline-item:nth-child(even)::before {
-        left: 0 !important;
-      }
-    }
-
-    /* Mobile nav animation */
-    #mobileMenu {
-      max-height: 0;
+      font-family: "Montserrat", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: normal;
+      font-style: normal;
+      color: var(--fg);
       overflow: hidden;
-      transition: max-height 0.4s ease-in-out;
     }
 
-    #mobileMenu.open {
-      max-height: 300px;
+    #root {
+      position: relative;
+      height: 100%;
+      width: 100%;
+    }
+
+    canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 14px;
+      letter-spacing: .02em;
+    }
+
+    h1 {
+      font-size: clamp(32px, 6vw, 52px);
+      margin: 0 0 16px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    p.bio {
+      max-width: 520px;
+      color: #d4d4d8;
+      line-height: 1.6;
+      font-size: 16px;
+      margin: 0 0 28px;
+    }
+
+    .links {
+      display: flex;
+      gap: 18px;
+      pointer-events: auto;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .links a {
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      transition: color .15s, border-color .15s, transform .15s;
+    }
+
+    .links a:hover {
+      color: #bfe0ff;
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .foot {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+      font-size: 12px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    @media (max-width:480px) {
+      .foot {
+        flex-direction: column;
+        gap: 4px;
+        align-items: center;
+        text-align: center;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="max-w-6xl mx-auto px-6">
-    <!-- Header -->
-    <header class="flex items-center justify-between py-6 fade-up">
-      <div class="flex items-center gap-2">
-        👨🏻‍💻
-        <!-- <span class="text-lg font-semibold">Sudarshan Sawandkar</span> -->
-      </div>
-
-      <!-- Desktop Nav -->
-      <nav class="hidden md:flex space-x-8 text-slate-600 text-sm items-center">
-        <a href="#home" class="hover:text-teal-600">Home</a>
-        <a href="#skills" class="hover:text-teal-600">Skills</a>
-        <a href="#experience" class="hover:text-teal-600">Experience</a>
-        <a href="#contact" class="hover:text-teal-600">Contact</a>
-        <a href="#" class="text-slate-500 hover:text-teal-600"><i class="fab fa-linkedin-in text-lg"></i></a>
-        <a href="#" class="text-slate-500 hover:text-teal-600"><i class="fab fa-instagram text-lg"></i></a>
-      </nav>
-
-      <a href="assets/resume.pdf" target="_blank"
-        class="hidden md:inline-block px-4 py-2 bg-teal-600 text-white text-sm rounded hover-bounce">
-        View Resume
-      </a>
-    </header>
-
-    <!-- Hero -->
-    <section id="home" class="flex flex-col md:flex-row items-center justify-between py-16 fade-up">
-      <div class="order-2 md:order-1 md:w-1/2 text-center md:text-left space-y-4">
-        <p class="text-teal-700 font-semibold text-sm uppercase tracking-wide">👋 Hi, I Am</p>
-        <h1 class="text-4xl md:text-5xl font-extrabold text-slate-800 leading-tight">
-          Sudarshan <span class="text-teal-600">Sawandkar</span>
-        </h1>
-
-        <div class="flex items-center justify-center md:justify-start gap-8 pt-4">
-          <!-- <div>
-            <h3 class="text-3xl font-bold text-teal-600">05</h3>
-            <p class="text-sm text-slate-500 uppercase tracking-wider">Years Experience</p>
-          </div>
-          <div class="border-l border-slate-300 h-8"></div> -->
-          <div>
-            <p class="text-md text-slate-700 uppercase tracking-wider">Experienced Full Stack Developer</p>
-          </div>
-        </div>
-
-
-        <p class="text-lg text-slate-600">I'm who turns complex ideas into fast, scalable web and
-          mobile experiences. I blend cutting edge technologies, cloud-native microservices, seamless
-          integrations and performance-driven interfaces in order to build modular systems that are as powerful under the hood
-          as they are polished on the surface.</p>
-        <div class="flex gap-4 pt-6 justify-center md:justify-start">
-          <a href="#contact" class="px-6 py-3 bg-teal-600 text-white rounded-md hover-bounce">Let's Talk</a>
-          <a href="#skills" class="px-6 py-3 border border-teal-600 text-teal-700 rounded-md hover-bounce">View
-            Skills</a>
-        </div>
-
-        <div class="flex gap-3 pt-8 justify-center md:justify-start text-slate-600">
-          <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-          <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
-          <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-          <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-        </div>
-      </div>
-
-      <div class="order-1 md:order-2 md:w-1/2 flex justify-center mb-10 md:mb-0 relative">
-        <div class="relative">
-          <div
-            class="w-60 h-60 md:w-72 md:h-72 rounded-full bg-white shadow-lg overflow-hidden border-4 border-teal-100">
-            <img src="assets/face.jpg" alt="Sudarshan photo" class="w-full h-full object-cover" />
-          </div>
-          <!-- <div
-            class="absolute right-[-30px] bottom-[10px] bg-white shadow-md rounded-lg px-4 py-2 flex items-center gap-3">
-            <div class="flex -space-x-2">
-              <img src="https://randomuser.me/api/portraits/men/1.jpg" class="w-6 h-6 rounded-full border" />
-              <img src="https://randomuser.me/api/portraits/women/2.jpg" class="w-6 h-6 rounded-full border" />
-              <img src="https://randomuser.me/api/portraits/men/3.jpg" class="w-6 h-6 rounded-full border" />
-            </div>
-            <div>
-              <p class="text-xs text-slate-500">Trusted Developer</p>
-              <div class="text-sm font-semibold text-teal-600">⭐ 5.0</div>
-            </div>
-          </div> -->
-        </div>
-      </div>
-    </section>
-
-    <!-- Skills -->
-    <section id="skills" class="py-20 fade-up">
-      <h2 class="text-3xl font-semibold mb-10 text-center">My Tech Stack</h2>
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 text-center">
-        <div class="bg-white rounded-xl p-6 shadow hover:shadow-lg transition hover-bounce">
-          <i class="fab fa-angular text-red-500 text-3xl mb-2"></i>
-          <p class="font-medium">Angular</p>
-        </div>
-        <div class="bg-white rounded-xl p-6 shadow hover:shadow-lg transition hover-bounce">
-          <i class="fab fa-react text-blue-500 text-3xl mb-2"></i>
-          <p class="font-medium">React</p>
-        </div>
-        <div class="bg-white rounded-xl p-6 shadow hover:shadow-lg transition hover-bounce">
-          <i class="fab fa-node text-green-600 text-3xl mb-2"></i>
-          <p class="font-medium">Node.js</p>
-        </div>
-        <div class="bg-white rounded-xl p-6 shadow hover:shadow-lg transition hover-bounce">
-          <i class="fab fa-js-square text-yellow-400 text-3xl mb-2"></i>
-          <p class="font-medium">JavaScript / TS</p>
-        </div>
-        <div class="bg-white rounded-xl p-6 shadow hover:shadow-lg transition hover-bounce">
-          <i class="fab fa-python text-indigo-500 text-3xl mb-2"></i>
-          <p class="font-medium">Python</p>
-        </div>
-        <div class="bg-white rounded-xl p-6 shadow hover:shadow-lg transition hover-bounce">
-          <i class="fas fa-database text-slate-600 text-3xl mb-2"></i>
-          <p class="font-medium">SQL / MongoDB</p>
-        </div>
-        <div class="bg-white rounded-xl p-6 shadow hover:shadow-lg transition hover-bounce">
-          <i class="fab fa-git-alt text-orange-500 text-3xl mb-2"></i>
-          <p class="font-medium">Git</p>
-        </div>
-        <div class="bg-white rounded-xl p-6 shadow hover:shadow-lg transition hover-bounce">
-          <i class="fas fa-cloud text-sky-500 text-3xl mb-2"></i>
-          <p class="font-medium">Cloud / APIs</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Experience Timeline -->
-    <section id="experience" class="py-20 fade-up">
-      <h2 class="text-3xl font-semibold mb-10 text-center">🚧 Experience Journey 🚧</h2>
-      <div class="timeline" id="timeline">
-        <div class="timeline-item slide-in">
-          <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
-            <h3 class="font-bold text-lg text-teal-700">Software Engineer</h3>
-            <h3 class="font-bold text-lg text-grey-700">Motorola Solutions</h3>
-            <p class="text-sm text-slate-500">12/2024 – Present | Bengaluru, India</p>
-            <p class="mt-2 text-slate-700">Designing resilient microservices, building intuitive & elegant user
-              interfaces while optimizing performance to enhance business logic and scalability.</p>
-          </div>
-        </div>
-        <div class="timeline-item slide-in">
-          <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
-            <h3 class="font-bold text-lg text-teal-700">Software Engineer</h3>
-            <h3 class="font-bold text-lg text-grey-700">Noggin</h3>
-            <p class="text-sm text-slate-500">07/2023 - 11/2024 | Bengaluru, India</p>
-            <p class="mt-2 text-slate-700">Engineered robust microservices with Node.js, developed seamless and refined
-              user interfaces, and streamlining system performance to strengthen core business functionality.</p>
-          </div>
-        </div>
-        <div class="timeline-item slide-in">
-          <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
-            <h3 class="font-bold text-lg text-teal-700">Member of Technical Staff</h3>
-            <h3 class="font-bold text-lg text-grey-700">Dwata Tech Pvt. Ltd</h3>
-            <p class="text-sm text-slate-500">12/2021 - 06/2023 | Bengaluru, India</p>
-            <p class="mt-2 text-slate-700">Built scalable backend services with Node.js, delivered clean and
-              user-centric interfaces, and enhanced application efficiency to optimize overall system performance.</p>
-          </div>
-        </div>
-        <div class="timeline-item slide-in">
-          <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
-            <h3 class="font-bold text-lg text-teal-700">Full Stack Blockchain Developer</h3>
-            <h3 class="font-bold text-lg text-grey-700">Techinvento IT Services Pvt. Ltd</h3>
-            <p class="text-sm text-slate-500">10/2020 - 11/2021 | Pune, India</p>
-            <p class="mt-2 text-slate-700">Developed resilient backend systems with Node.js, crafted streamlined and
-              user-friendly interfaces, and improved performance to reinforce core business operations.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact" class="py-20 fade-up">
-      <h2 class="text-3xl font-semibold mb-6 text-center">Let’s Connect 💬</h2>
-      <div class="max-w-lg mx-auto bg-white shadow-md rounded-xl p-8 text-center">
-        <p class="text-slate-600 mb-6">Have an idea, collaboration, or opportunity? Drop a quick message 👇</p>
-        <form id="contactForm" class="space-y-4">
-          <textarea id="message" rows="4" placeholder="Your message here..."
-            class="w-full px-4 py-3 border border-gray-200 rounded focus:border-teal-500 focus:outline-none"></textarea>
-          <button type="submit"
-            class="px-6 py-3 bg-gradient-to-r from-teal-600 to-cyan-500 text-white rounded hover-bounce">Send Message
-            🚀</button>
-        </form>
-        <p id="formStatus" class="text-sm text-slate-500 mt-4"></p>
-      </div>
-    </section>
-
-    <footer class="text-center py-8 text-sm text-slate-500">
-      Built with ❤️ by Sudarshan &copy; 2026
-    </footer>
-  </div>
-
+  <div id="root"></div>
   <script>
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-up, .slide-in').forEach(el => observer.observe(el));
+    const { useEffect, useRef, createElement: h } = React;
 
-    // Animate timeline connector
-    const timeline = document.getElementById('timeline');
-    const timelineObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) timeline.classList.add('fill');
-      });
-    }, { threshold: 0.2 });
-    timelineObserver.observe(timeline);
+    function Page() {
+      const canvasRef = useRef(null);
+      const particlesRef = useRef([]);
+      const mouseRef = useRef({ x: -9999, y: -9999 });
 
-    // Contact form mailto
-    const form = document.getElementById('contactForm');
-    const status = document.getElementById('formStatus');
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      status.textContent = 'Opening mail client...';
-      const body = `Message: ${form.message?.value}`;
-      window.location.href = `mailto:your.email@example.com?subject=${encodeURIComponent('Contact from Portfolio')}&body=${encodeURIComponent(body)}`;
-    });
+      useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        let w, h, dpr;
+        const LINK_DIST = 130;
+        const wavesRef = { current: [] };
 
-    // Mobile Menu Toggle
-    const menuBtn = document.getElementById('menuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    menuBtn.addEventListener('click', () => {
-      mobileMenu.classList.toggle('open');
-    });
+        function resize() {
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+          w = canvas.clientWidth; h = canvas.clientHeight;
+          canvas.width = w * dpr; canvas.height = h * dpr;
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        function makeParticles(n) {
+          const arr = [];
+          for (let i = 0; i < n; i++) {
+            const ang = Math.random() * Math.PI * 2;
+            const spd = 8 + Math.random() * 14; // px/sec, constant — no decay
+            arr.push({
+              x: Math.random() * w,
+              y: Math.random() * h,
+              vx: Math.cos(ang) * spd,
+              vy: Math.sin(ang) * spd,
+              r: 1.3 + Math.random() * 1.6,
+              glow: 0
+            });
+          }
+          return arr;
+        }
+        particlesRef.current = makeParticles(Math.floor((w * h) / 9000));
+
+        function onMove(e) {
+          const rect = canvas.getBoundingClientRect();
+          mouseRef.current.x = e.clientX - rect.left;
+          mouseRef.current.y = e.clientY - rect.top;
+        }
+        function onLeave() { mouseRef.current.x = -9999; mouseRef.current.y = -9999; }
+        function fireWave(cx, cy) {
+          wavesRef.current.push({ x: cx, y: cy, born: performance.now() });
+        }
+        canvas.addEventListener('mousemove', onMove);
+        canvas.addEventListener('mouseleave', onLeave);
+        const clickHandler = (e) => onClick(e);
+        canvas.addEventListener('click', clickHandler);
+        canvas.addEventListener('touchstart', (e) => {
+          const t = e.touches[0]; const rect = canvas.getBoundingClientRect();
+          fireWave(t.clientX - rect.left, t.clientY - rect.top);
+        }, { passive: true });
+
+        const WAVE_SPEED = 900;   // px per second — faster wave
+        const WAVE_BAND = 46;     // thickness of the lit band
+        const WAVE_LIFE = 1300;   // ms until a wave fully fades
+        const MAX_PARTICLES = 180;
+
+        function onClick(e) {
+          const rect = canvas.getBoundingClientRect();
+          const cx = e.clientX - rect.left, cy = e.clientY - rect.top;
+          fireWave(cx, cy);
+          // spawn a new node at the click point so it joins the network
+          const arr = particlesRef.current;
+          const n = 2 + Math.floor(Math.random() * 2);
+          for (let i = 0; i < n; i++) {
+            if (arr.length >= MAX_PARTICLES) arr.shift();
+            const ang = Math.random() * Math.PI * 2;
+            const spd = 8 + Math.random() * 14;
+            arr.push({
+              x: cx + (Math.random() - 0.5) * 20,
+              y: cy + (Math.random() - 0.5) * 20,
+              vx: Math.cos(ang) * spd,
+              vy: Math.sin(ang) * spd,
+              r: 1.6 + Math.random() * 1.6,
+              glow: 1
+            });
+          }
+        }
+
+        let raf, last = performance.now();
+        function tick(now) {
+          const dt = Math.min(now - last, 40); last = now;
+          const dtSec = dt / 1000;
+          ctx.clearRect(0, 0, w, h);
+          const arr = particlesRef.current;
+          const m = mouseRef.current;
+          const waves = wavesRef.current;
+
+          // advance ambient particles at constant drift speed
+          for (const p of arr) {
+            const dx = p.x - m.x, dy = p.y - m.y;
+            const d = Math.hypot(dx, dy);
+            if (d < 90 && d > 0.01) {
+              const f = (90 - d) / 90 * 30;
+              p.vx += (dx / d) * f * dtSec;
+              p.vy += (dy / d) * f * dtSec;
+            }
+            p.x += p.vx * dtSec; p.y += p.vy * dtSec;
+            if (p.x < -5) p.x = w + 5; if (p.x > w + 5) p.x = -5;
+            if (p.y < -5) p.y = h + 5; if (p.y > h + 5) p.y = -5;
+            p.glow *= 0.92;
+          }
+
+          // expire old waves
+          for (let i = waves.length - 1; i >= 0; i--) {
+            if (now - waves[i].born > WAVE_LIFE) waves.splice(i, 1);
+          }
+
+          // draw connecting threads, illuminating any a wave-front is currently crossing
+          ctx.lineWidth = 1;
+          for (let i = 0; i < arr.length; i++) {
+            for (let j = i + 1; j < arr.length; j++) {
+              const a = arr[i], b = arr[j];
+              const dx = a.x - b.x, dy = a.y - b.y;
+              const dist = Math.hypot(dx, dy);
+              if (dist >= LINK_DIST) continue;
+              const baseAlpha = 1 - dist / LINK_DIST;
+
+              let lit = 0;
+              for (const wv of waves) {
+                const age = now - wv.born;
+                const radius = age / 1000 * WAVE_SPEED;
+                const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+                const dMid = Math.hypot(mx - wv.x, my - wv.y);
+                const delta = Math.abs(dMid - radius);
+                if (delta < WAVE_BAND / 2) {
+                  const strength = (1 - delta / (WAVE_BAND / 2)) * (1 - age / WAVE_LIFE);
+                  if (strength > lit) lit = strength;
+                  a.glow = Math.max(a.glow, strength);
+                  b.glow = Math.max(b.glow, strength);
+                }
+              }
+
+              if (lit > 0.02) {
+                const s = Math.min(lit, 1);
+                ctx.strokeStyle = `rgba(${210 - 40 * s},${232 - 10 * s},255,${s})`;
+                ctx.lineWidth = 1.4;
+              } else {
+                ctx.strokeStyle = `rgba(161,161,170,${baseAlpha * 0.28})`;
+                ctx.lineWidth = 1;
+              }
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+              ctx.stroke();
+            }
+          }
+
+          for (const p of arr) {
+            const glow = Math.min(p.glow, 1);
+            if (glow > 0.03) {
+              ctx.beginPath();
+              ctx.fillStyle = `rgba(150,205,255,${glow * 0.4})`;
+              ctx.arc(p.x, p.y, p.r + glow * 4.5, 0, Math.PI * 2);
+              ctx.fill();
+            }
+            ctx.beginPath();
+            ctx.fillStyle = glow > 0.03
+              ? `rgba(255,255,255,${0.85 + glow * 0.15})`
+              : 'rgba(212,212,216,0.85)';
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          raf = requestAnimationFrame(tick);
+        }
+        raf = requestAnimationFrame(tick);
+
+        return () => {
+          cancelAnimationFrame(raf);
+          window.removeEventListener('resize', resize);
+          canvas.removeEventListener('mousemove', onMove);
+          canvas.removeEventListener('mouseleave', onLeave);
+          canvas.removeEventListener('click', clickHandler);
+        };
+      }, []);
+
+      const icons = {
+        // GitHub: h('svg', { viewBox: '0 0 24 24', width: 22, height: 22, fill: 'none' },
+        //   h('circle', { cx: 12, cy: 12, r: 9, stroke: 'currentColor', strokeWidth: 1.6 }),
+        //   h('path', { d: 'M9 17c-2-.5-2-2-3-2m6 3v-2.3c0-.6.2-1 .5-1.3-1.7-.2-3.5-.9-3.5-3.7 0-.8.3-1.5.8-2-.1-.2-.3-1 .1-2.1 0 0 .7-.2 2.1.8.6-.2 1.3-.3 2-.3s1.4.1 2 .3c1.4-1 2.1-.8 2.1-.8.4 1.1.2 1.9.1 2.1.5.5.8 1.2.8 2 0 2.8-1.8 3.5-3.5 3.7.3.3.5.7.5 1.4V17', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' })
+        // ),
+        // X: h('svg', { viewBox: '0 0 24 24', width: 22, height: 22, fill: 'none' },
+        //   h('rect', { x: 2, y: 2, width: 20, height: 20, rx: 5, stroke: 'currentColor', strokeWidth: 1.6 }),
+        //   h('path', { d: 'M7 7l10 10M17 7L7 17', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round' })
+        // ),
+        LinkedIn: h('svg', { viewBox: '0 0 24 24', width: 22, height: 22, fill: 'none' },
+          h('rect', { x: 2, y: 2, width: 20, height: 20, rx: 5, stroke: 'currentColor', strokeWidth: 1.6 }),
+          h('circle', { cx: 7.5, cy: 7.8, r: 1.3, fill: 'currentColor' }),
+          h('path', { d: 'M7.5 11v6M11.2 17v-3.4c0-1.5.9-2.6 2.3-2.6s2 1 2 2.5V17M11.2 11v6', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' })
+        ),
+        Gmail: h('svg', { viewBox: '0 0 24 24', width: 22, height: 22, fill: 'none' },
+        h('circle', { cx: 12, cy: 12, r: 9, stroke: 'currentColor', strokeWidth: 1.6 }),
+        h('path', { d: 'M7 9h10c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1z', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' }),
+        h('path', { d: 'M6 10l6 3.5 6-3.5', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' })
+      ),
+        // Instagram: h('svg', { viewBox: '0 0 24 24', width: 22, height: 22, fill: 'none' },
+        //   h('rect', { x: 2, y: 2, width: 20, height: 20, rx: 6, stroke: 'currentColor', strokeWidth: 1.6 }),
+        //   h('circle', { cx: 12, cy: 12, r: 4.2, stroke: 'currentColor', strokeWidth: 1.6 }),
+        //   h('circle', { cx: 17.3, cy: 6.7, r: 1.1, fill: 'currentColor' })
+        // )
+      };
+
+      return h(React.Fragment, null,
+        h('canvas', { ref: canvasRef }),
+        h('div', { className: 'content' },
+          // h('p', {className:'eyebrow'}, 'sudarshansb143@gmail.com'),
+          h('h1', null, 'Sudarshan Sawandkar'),
+          h('i', { className: 'bio' },
+            "Software Engineer "
+          ),
+          h('br'),
+          h('p', { className: 'bio' },
+            "Building web apps and managing high throughput systems. Currently focused on AI and Performance Engineering"
+          ),
+          h('div', { className: 'links' },
+            Object.keys(icons).map(name =>{
+              if (name === "Gmail") {
+               return h('a', { key: name, href: 'mailto:sudarshansb143@gmail.com', target: '_blank', rel: 'noopener', 'aria-label': name, title: name }, icons[name])
+              } else {
+               return  h('a', { key: name, href: 'https://www.linkedin.com/in/sudarshan-78jack/', target: '_blank', rel: 'noopener', 'aria-label': name, title: name }, icons[name])
+              }
+            }
+            )
+          )
+        ),
+        h('div', { className: 'foot' },
+          // h('span', null, 'tmyourhandle'),
+          h('span', null, '\u00A9 2026 Sudarshan Sawandkar')
+        )
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(h(Page));
   </script>
 </body>
 
