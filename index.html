@@ -27,11 +27,10 @@
       --toggle-bg: rgba(255, 255, 255, 0.05);
       --toggle-border: #3f3f46;
       --toggle-hover-bg: rgba(129, 140, 248, 0.14);
-      --cross: #39ff88;
-      --cross-outline: rgba(0, 0, 0, 0.75);
-      --label-bg: rgba(9, 9, 11, 0.72);
-      --label-fg: #e4e4e7;
-      --label-border: rgba(255, 255, 255, 0.12);
+      --ring: #AEEED3;
+      --ring-glow: rgba(174, 238, 211, 0.6);
+      --ring-edge: rgba(0, 0, 0, 0);
+      --cat: #d4d4d8;
       color-scheme: dark;
     }
 
@@ -47,11 +46,10 @@
       --toggle-bg: rgba(15, 23, 42, 0.04);
       --toggle-border: #cbd5e1;
       --toggle-hover-bg: rgba(37, 99, 235, 0.1);
-      --cross: #00b85c;
-      --cross-outline: rgba(255, 255, 255, 0.9);
-      --label-bg: rgba(248, 250, 252, 0.8);
-      --label-fg: #0f172a;
-      --label-border: rgba(15, 23, 42, 0.14);
+      --ring: #AEEED3;
+      --ring-glow: rgba(40, 150, 105, 0.45);
+      --ring-edge: rgba(20, 110, 80, 0.6);
+      --cat: #1e293b;
       color-scheme: light;
     }
 
@@ -95,8 +93,8 @@
       height: 100%;
     }
 
-    /* ---------- Custom crosshair cursor (mouse devices only) ---------- */
-    .cursor-root {
+    /* ---------- Rhombus cursor (AEEED3) (mouse devices only) ---------- */
+    .cursor-ring {
       position: fixed;
       left: 0;
       top: 0;
@@ -107,63 +105,87 @@
       will-change: transform;
     }
 
-    .cursor-root.visible {
+    .cursor-ring.visible {
       opacity: 1;
     }
 
-    .crosshair {
-      position: absolute;
-      left: -24px;
-      top: -24px;
-      width: 30px;
-      height: 30px;
-      color: var(--cross);
-      transition: transform .09s ease-out, color .15s ease;
+    .ring-inner {
+      display: block;
+      width: 36px;
+      height: 36px;
+      margin: -18px 0 0 -18px;
+      overflow: visible;
+      filter: drop-shadow(0 0 5px var(--ring-glow));
+      transition: transform .18s ease;
     }
 
-    .crosshair rect {
-      fill: currentColor;
-      stroke: var(--cross-outline);
-      stroke-width: 1;
+    .cursor-ring.hot .ring-inner {
+      transform: scale(1.45);
     }
 
-    .cursor-root.hot .crosshair {
-      color: var(--accent);
-      transform: scale(1.18) rotate(45deg);
-    }
-
-    .cursor-root.fire .crosshair {
-      transform: scale(1.4);
-    }
-
-    .cursor-root.hot.fire .crosshair {
-      transform: scale(1.4) rotate(45deg);
-    }
-
-    .coords {
-      position: absolute;
-      left: 0;
-      top: 0;
-      min-width: 104px;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font: 500 11px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-variant-numeric: tabular-nums;
-      white-space: pre;
-      color: var(--label-fg);
-      background: var(--label-bg);
-      border: 1px solid var(--label-border);
-      backdrop-filter: blur(4px);
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-      html, body, body *, canvas, .links a, .theme-toggle {
-        cursor: none !important;
-      }
+    .cursor-ring.down .ring-inner {
+      transform: scale(0.72);
     }
 
     @media (hover: none), (pointer: coarse) {
-      .cursor-root { display: none; }
+      .cursor-ring { display: none; }
+    }
+
+    /* ---------- Cat walking on the spot (bottom right) ---------- */
+    .cat {
+      position: fixed;
+      right: 28px;
+      bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+      width: 64px;
+      height: 41px;
+      z-index: 3;
+      pointer-events: none;
+      color: var(--cat);
+    }
+
+    .cat svg {
+      display: block;
+      overflow: visible;
+    }
+
+    .cat .leg {
+      animation: step .7s ease-in-out infinite;
+    }
+
+    @keyframes step {
+      0%, 100% { transform: rotate(-22deg); }
+      50%      { transform: rotate(22deg); }
+    }
+
+    .cat .cat-body {
+      animation: bob .35s ease-in-out infinite alternate;
+    }
+
+    @keyframes bob {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-1.3px); }
+    }
+
+    .cat .tail {
+      animation: sway 1.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes sway {
+      from { transform: rotate(-8deg); }
+      to   { transform: rotate(8deg); }
+    }
+
+    .cat .eye {
+      animation: eyeblink 5s ease-in-out infinite;
+    }
+
+    @keyframes eyeblink {
+      0%, 93%, 100% { transform: scaleY(1); }
+      96%           { transform: scaleY(0.1); }
+    }
+
+    @media (max-width: 600px) {
+      .cat { right: 16px; }
     }
 
     .content {
@@ -314,6 +336,7 @@
     @media (prefers-reduced-motion: reduce) {
       .caret { animation: none; }
       .theme-toggle svg { animation: none; }
+      .cat .leg, .cat .cat-body, .cat .tail, .cat .eye { animation: none; }
     }
   </style>
 </head>
@@ -334,14 +357,20 @@
         line: (a) => `rgba(161,161,170,${a * 0.28})`,
         lit: (s) => `rgba(${210 - 40 * s},${232 - 10 * s},255,${s})`,
         halo: (g) => `rgba(150,205,255,${g * 0.4})`,
-        core: (g) => `rgba(255,255,255,${0.85 + g * 0.15})`
+        core: (g) => `rgba(255,255,255,${0.85 + g * 0.15})`,
+        cometTail: (a) => `rgba(150,205,255,${a})`,
+        cometGlow: 'rgba(170,215,255,0.35)',
+        cometHead: 'rgba(255,255,255,1)'
       },
       light: {
         particle: 'rgba(51,65,85,0.75)',
         line: (a) => `rgba(71,85,105,${a * 0.35})`,
         lit: (s) => `rgba(${59 - 22 * s},${130 - 31 * s},246,${s})`,
         halo: (g) => `rgba(59,130,246,${g * 0.35})`,
-        core: (g) => `rgba(29,78,216,${0.85 + g * 0.15})`
+        core: (g) => `rgba(29,78,216,${0.85 + g * 0.15})`,
+        cometTail: (a) => `rgba(37,99,235,${a})`,
+        cometGlow: 'rgba(59,130,246,0.3)',
+        cometHead: 'rgba(30,64,175,1)'
       }
     };
 
@@ -373,35 +402,34 @@
       );
     }
 
-    function Crosshair() {
-      const rootRef = useRef(null);
-      const labelRef = useRef(null);
+    function CursorRing() {
+      const ref = useRef(null);
 
       useEffect(() => {
-        const root = rootRef.current;
-        const label = labelRef.current;
-        const pad = (n) => String(Math.round(n)).padStart(4, ' ');
+        const el = ref.current;
+        let tx = -100, ty = -100, x = -100, y = -100, seen = false, raf;
 
         function onMove(e) {
-          const x = e.clientX, y = e.clientY;
-          root.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-          label.textContent = `X ${pad(x)}\nY ${pad(y)}`;
-          // flip the label so it never runs off-screen
-          const tx = x > window.innerWidth - 150 ? -(26 + 104) : 26;
-          const ty = y > window.innerHeight - 70 ? -(26 + 40) : 26;
-          label.style.transform = `translate(${tx}px, ${ty}px)`;
-          root.classList.add('visible');
-          root.classList.toggle('hot', !!(e.target.closest && e.target.closest('a, button')));
+          tx = e.clientX; ty = e.clientY;
+          if (!seen) { x = tx; y = ty; seen = true; el.classList.add('visible'); }
+          el.classList.toggle('hot', !!(e.target.closest && e.target.closest('a, button')));
         }
-        function onLeave() { root.classList.remove('visible'); }
-        function onDown() { root.classList.add('fire'); }
-        function onUp() { root.classList.remove('fire'); }
+        function onLeave() { el.classList.remove('visible'); seen = false; }
+        function onDown() { el.classList.add('down'); }
+        function onUp() { el.classList.remove('down'); }
+        function loop() {
+          x += (tx - x) * 0.35; y += (ty - y) * 0.35;
+          el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+          raf = requestAnimationFrame(loop);
+        }
+        raf = requestAnimationFrame(loop);
 
         document.addEventListener('mousemove', onMove);
         document.addEventListener('mouseleave', onLeave);
         document.addEventListener('mousedown', onDown);
         document.addEventListener('mouseup', onUp);
         return () => {
+          cancelAnimationFrame(raf);
           document.removeEventListener('mousemove', onMove);
           document.removeEventListener('mouseleave', onLeave);
           document.removeEventListener('mousedown', onDown);
@@ -409,16 +437,56 @@
         };
       }, []);
 
-      const bar = (x, y, w, hh) => h('rect', { x, y, width: w, height: hh, rx: 0.5 });
-      return h('div', { className: 'cursor-root', ref: rootRef, 'aria-hidden': 'true' },
-        h('svg', { className: 'crosshair', viewBox: '0 0 48 48', shapeRendering: 'crispEdges' },
-          bar(23, 5, 2, 12),    // top
-          bar(23, 31, 2, 12),   // bottom
-          bar(5, 23, 12, 2),    // left
-          bar(31, 23, 12, 2),   // right
-          bar(23, 23, 2, 2)     // center dot
-        ),
-        h('div', { className: 'coords', ref: labelRef }, 'X    0\nY    0')
+      return h('div', { className: 'cursor-ring', ref: ref, 'aria-hidden': 'true' },
+        h('svg', { className: 'ring-inner', viewBox: '0 0 36 36' },
+          // thin edge underneath keeps the pale mint visible on the light theme
+          h('polygon', { points: '18,2 32,18 18,34 4,18', fill: 'none', strokeLinejoin: 'round',
+            style: { stroke: 'var(--ring-edge)', strokeWidth: 4.6 } }),
+          h('polygon', { points: '18,2 32,18 18,34 4,18', fill: 'none', strokeLinejoin: 'round',
+            style: { stroke: 'var(--ring)', strokeWidth: 2.4 } })
+        )
+      );
+    }
+
+    /* Original outlined cat, side view, walking on the spot */
+    function Cat() {
+      const leg = (x, delay, opacity) => h('rect', {
+        className: 'leg', x: x, y: 38, width: 7, height: 21, rx: 3.5,
+        opacity: opacity,
+        style: { transformOrigin: (x + 3.5) + 'px 40px', animationDelay: delay }
+      });
+      const bg = { fill: 'var(--bg)' };
+      const solid = { fill: 'currentColor' };
+
+      return h('div', { className: 'cat', 'aria-hidden': 'true' },
+        h('svg', {
+          viewBox: '0 0 100 64', width: 64, height: 41,
+          stroke: 'currentColor', strokeWidth: 1.8, strokeLinejoin: 'round', strokeLinecap: 'round',
+          style: { fill: 'none' }
+        },
+          // far-side legs (dimmer, for depth), then near-side legs
+          leg(31, '-0.35s', 0.55), leg(67, '0s', 0.55),
+          leg(39, '0s', 1), leg(75, '-0.35s', 1),
+          // tail: outlined tube (dark stroke, then background-coloured core)
+          h('g', { className: 'tail', style: { transformOrigin: '80px 33px' } },
+            h('path', { d: 'M80 33 C93 33, 96 18, 89 9', strokeWidth: 7.5, style: { fill: 'none' } }),
+            h('path', { d: 'M80 33 C93 33, 96 18, 89 9', strokeWidth: 4, style: { fill: 'none', stroke: 'var(--bg)' } })
+          ),
+          h('g', { className: 'cat-body' },
+            h('ellipse', { cx: 57, cy: 33, rx: 27, ry: 12, style: bg }),
+            h('path', { d: 'M46 22.5 L48.5 29 M54 21.5 L56.5 28.5 M62 21.5 L64 28', strokeWidth: 1.5, opacity: 0.7, style: { fill: 'none' } }),
+            // ears sit behind the head
+            h('polygon', { points: '12,21 13,5 25,14', style: bg }),
+            h('polygon', { points: '22,13 33,5 36,21', style: bg }),
+            h('path', { d: 'M15.5 15 L16 10 L21 13.5', strokeWidth: 1.2, opacity: 0.7, style: { fill: 'none' } }),
+            h('ellipse', { cx: 24, cy: 27, rx: 14, ry: 12, style: bg }),
+            h('ellipse', { className: 'eye', cx: 18, cy: 25, rx: 2.2, ry: 2.8, strokeWidth: 0.5,
+              style: Object.assign({ transformOrigin: '18px 25px' }, solid) }),
+            h('polygon', { points: '9.5,29 13.5,29 11.5,31.6', strokeWidth: 0.8, style: solid }),
+            h('path', { d: 'M11.5 31.6 Q11.5 34.5 8.5 34.5 M11.5 31.6 Q11.5 34.5 14.5 34.5', strokeWidth: 1.1, style: { fill: 'none' } }),
+            h('path', { d: 'M11 29 L1 26.5 M11 31 L1 33.5', strokeWidth: 1, opacity: 0.75, style: { fill: 'none' } })
+          )
+        )
       );
     }
 
@@ -545,6 +613,19 @@
           }
         }
 
+        // occasional comets that streak across the background, left -> right
+        const comets = [];
+        let nextComet = performance.now() + 2500;
+        function spawnComet() {
+          const speed = 520 + Math.random() * 260;
+          const ang = 0.08 + Math.random() * 0.35; // gentle downward slope
+          comets.push({
+            x: -40, y: Math.random() * h * 0.55,
+            vx: Math.cos(ang) * speed, vy: Math.sin(ang) * speed,
+            trail: [], done: false
+          });
+        }
+
         let raf, last = performance.now();
         function tick(now) {
           const pal = paletteRef.current; // always current theme
@@ -612,6 +693,45 @@
               ctx.stroke();
             }
           }
+
+          // comets: update, draw tail + head, and lightly ignite nodes they pass
+          if (!reduceMotion && now >= nextComet) {
+            spawnComet();
+            nextComet = now + 7000 + Math.random() * 8000;
+          }
+          ctx.lineCap = 'round';
+          for (let i = comets.length - 1; i >= 0; i--) {
+            const c = comets[i];
+            if (!c.done) {
+              c.x += c.vx * dtSec; c.y += c.vy * dtSec;
+              c.trail.push({ x: c.x, y: c.y });
+              if (c.trail.length > 38) c.trail.shift();
+              if (c.x > w + 60 || c.y > h + 60) c.done = true;
+            } else {
+              c.trail.shift();
+              if (c.trail.length === 0) { comets.splice(i, 1); continue; }
+            }
+            const tr = c.trail;
+            for (let k = 1; k < tr.length; k++) {
+              const t = k / tr.length;
+              ctx.strokeStyle = pal.cometTail(t * 0.85);
+              ctx.lineWidth = 0.6 + t * 2.8;
+              ctx.beginPath();
+              ctx.moveTo(tr[k - 1].x, tr[k - 1].y);
+              ctx.lineTo(tr[k].x, tr[k].y);
+              ctx.stroke();
+            }
+            if (!c.done) {
+              ctx.beginPath(); ctx.fillStyle = pal.cometGlow;
+              ctx.arc(c.x, c.y, 9, 0, Math.PI * 2); ctx.fill();
+              ctx.beginPath(); ctx.fillStyle = pal.cometHead;
+              ctx.arc(c.x, c.y, 2.6, 0, Math.PI * 2); ctx.fill();
+              for (const p of arr) {
+                if (Math.hypot(p.x - c.x, p.y - c.y) < 50) p.glow = Math.max(p.glow, 0.7);
+              }
+            }
+          }
+          ctx.lineCap = 'butt';
 
           for (const p of arr) {
             const glow = Math.min(p.glow, 1);
@@ -738,7 +858,8 @@
 
       return h(React.Fragment, null,
         h('canvas', { ref: canvasRef }),
-        h(Crosshair),
+        h(CursorRing),
+        h(Cat),
         h('button', {
           className: 'theme-toggle',
           onClick: toggleTheme,
