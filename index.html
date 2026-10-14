@@ -102,14 +102,13 @@
     }
 
     .links a {
-      color: var(--muted);
+      color: white;
       display: flex;
       align-items: center;
       justify-content: center;
       width: 40px;
       height: 40px;
       border-radius: 10px;
-      border: 1px solid var(--line);
       transition: color .15s, border-color .15s, transform .15s;
     }
 
@@ -331,29 +330,16 @@
       }, []);
 
       const icons = {
-        // GitHub: h('svg', { viewBox: '0 0 24 24', width: 22, height: 22, fill: 'none' },
-        //   h('circle', { cx: 12, cy: 12, r: 9, stroke: 'currentColor', strokeWidth: 1.6 }),
-        //   h('path', { d: 'M9 17c-2-.5-2-2-3-2m6 3v-2.3c0-.6.2-1 .5-1.3-1.7-.2-3.5-.9-3.5-3.7 0-.8.3-1.5.8-2-.1-.2-.3-1 .1-2.1 0 0 .7-.2 2.1.8.6-.2 1.3-.3 2-.3s1.4.1 2 .3c1.4-1 2.1-.8 2.1-.8.4 1.1.2 1.9.1 2.1.5.5.8 1.2.8 2 0 2.8-1.8 3.5-3.5 3.7.3.3.5.7.5 1.4V17', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' })
-        // ),
-        // X: h('svg', { viewBox: '0 0 24 24', width: 22, height: 22, fill: 'none' },
-        //   h('rect', { x: 2, y: 2, width: 20, height: 20, rx: 5, stroke: 'currentColor', strokeWidth: 1.6 }),
-        //   h('path', { d: 'M7 7l10 10M17 7L7 17', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round' })
-        // ),
-        LinkedIn: h('svg', { viewBox: '0 0 24 24', width: 22, height: 22, fill: 'none' },
-          h('rect', { x: 2, y: 2, width: 20, height: 20, rx: 5, stroke: 'currentColor', strokeWidth: 1.6 }),
-          h('circle', { cx: 7.5, cy: 7.8, r: 1.3, fill: 'currentColor' }),
-          h('path', { d: 'M7.5 11v6M11.2 17v-3.4c0-1.5.9-2.6 2.3-2.6s2 1 2 2.5V17M11.2 11v6', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' })
+        LinkedIn: h('svg', { viewBox: '0 0 24 24', width: 50, height: 50, fill: 'none', shapeRendering: 'geometricPrecision' },
+          h('rect', { x: 2.2, y: 2.2, width: 19.6, height: 19.6, rx: 5, stroke: 'currentColor', strokeWidth: 2 }),
+          h('circle', { cx: 7.5, cy: 7.8, r: 1.5, fill: 'currentColor' }),
+          h('path', { d: 'M7.5 11v6M11.2 17v-3.4c0-1.5.9-2.6 2.3-2.6s2 1 2 2.5V17M11.2 11v6', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' })
         ),
-        Gmail: h('svg', { viewBox: '0 0 24 24', width: 22, height: 22, fill: 'none' },
-        h('circle', { cx: 12, cy: 12, r: 9, stroke: 'currentColor', strokeWidth: 1.6 }),
-        h('path', { d: 'M7 9h10c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1z', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' }),
-        h('path', { d: 'M6 10l6 3.5 6-3.5', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round' })
-      ),
-        // Instagram: h('svg', { viewBox: '0 0 24 24', width: 22, height: 22, fill: 'none' },
-        //   h('rect', { x: 2, y: 2, width: 20, height: 20, rx: 6, stroke: 'currentColor', strokeWidth: 1.6 }),
-        //   h('circle', { cx: 12, cy: 12, r: 4.2, stroke: 'currentColor', strokeWidth: 1.6 }),
-        //   h('circle', { cx: 17.3, cy: 6.7, r: 1.1, fill: 'currentColor' })
-        // )
+        Gmail: h('svg', { viewBox: '0 0 24 24', width: 24, height: 24, fill: 'none', shapeRendering: 'geometricPrecision' },
+          h('circle', { cx: 12, cy: 12, r: 9, stroke: 'currentColor', strokeWidth: 2 }),
+          h('rect', { x: 6, y: 8.5, width: 12, height: 7.5, rx: 1.4, stroke: 'currentColor', strokeWidth: 2, strokeLinejoin: 'round' }),
+          h('path', { d: 'M6.6 9.2l5.4 4 5.4-4', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' })
+        ),
       };
 
       return h(React.Fragment, null,
@@ -369,11 +355,11 @@
             "Building web apps and managing high throughput systems. Currently focused on AI and Performance Engineering"
           ),
           h('div', { className: 'links' },
-            Object.keys(icons).map(name =>{
+            Object.keys(icons).map(name => {
               if (name === "Gmail") {
-               return h('a', { key: name, href: 'mailto:sudarshansb143@gmail.com', target: '_blank', rel: 'noopener', 'aria-label': name, title: name }, icons[name])
+                return h('a', { key: name, href: 'mailto:sudarshansb143@gmail.com', target: '_blank', rel: 'noopener', 'aria-label': name, title: name }, icons[name])
               } else {
-               return  h('a', { key: name, href: 'https://www.linkedin.com/in/sudarshan-78jack/', target: '_blank', rel: 'noopener', 'aria-label': name, title: name }, icons[name])
+                return h('a', { key: name, href: 'https://www.linkedin.com/in/sudarshan-78jack/', target: '_blank', rel: 'noopener', 'aria-label': name, title: name }, icons[name])
               }
             }
             )
