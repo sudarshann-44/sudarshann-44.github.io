@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
   <meta charset="UTF-8">
@@ -13,12 +13,49 @@
     rel="stylesheet">
   <link rel="icon" href="assets/face.jpg" />
   <style>
-    :root {
+    /* ---------- Theme tokens ---------- */
+    :root,
+    :root[data-theme="dark"] {
       --bg: #09090b;
       --fg: #fafafa;
       --muted: #71717a;
+      --bio: #d4d4d8;
       --line: #27272a;
       --accent: #818cf8;
+      --icon: #ffffff;
+      --icon-hover: #bfe0ff;
+      --toggle-bg: rgba(255, 255, 255, 0.05);
+      --toggle-border: #3f3f46;
+      --toggle-hover-bg: rgba(129, 140, 248, 0.14);
+      --cross: #39ff88;
+      --cross-outline: rgba(0, 0, 0, 0.75);
+      --label-bg: rgba(9, 9, 11, 0.72);
+      --label-fg: #e4e4e7;
+      --label-border: rgba(255, 255, 255, 0.12);
+      color-scheme: dark;
+    }
+
+    :root[data-theme="light"] {
+      --bg: #f8fafc;
+      --fg: #0f172a;
+      --muted: #64748b;
+      --bio: #334155;
+      --line: #e2e8f0;
+      --accent: #2563eb;
+      --icon: #0f172a;
+      --icon-hover: #2563eb;
+      --toggle-bg: rgba(15, 23, 42, 0.04);
+      --toggle-border: #cbd5e1;
+      --toggle-hover-bg: rgba(37, 99, 235, 0.1);
+      --cross: #00b85c;
+      --cross-outline: rgba(255, 255, 255, 0.9);
+      --label-bg: rgba(248, 250, 252, 0.8);
+      --label-fg: #0f172a;
+      --label-border: rgba(15, 23, 42, 0.14);
+      color-scheme: light;
+    }
+
+    :root {
       box-sizing: border-box;
       padding-top: env(safe-area-inset-top, 0px);
       padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -42,6 +79,7 @@
       font-style: normal;
       color: var(--fg);
       overflow: hidden;
+      transition: background-color .35s ease, color .35s ease;
     }
 
     #root {
@@ -55,7 +93,77 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      cursor: crosshair;
+    }
+
+    /* ---------- Custom crosshair cursor (mouse devices only) ---------- */
+    .cursor-root {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 100;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .15s ease;
+      will-change: transform;
+    }
+
+    .cursor-root.visible {
+      opacity: 1;
+    }
+
+    .crosshair {
+      position: absolute;
+      left: -24px;
+      top: -24px;
+      width: 30px;
+      height: 30px;
+      color: var(--cross);
+      transition: transform .09s ease-out, color .15s ease;
+    }
+
+    .crosshair rect {
+      fill: currentColor;
+      stroke: var(--cross-outline);
+      stroke-width: 1;
+    }
+
+    .cursor-root.hot .crosshair {
+      color: var(--accent);
+      transform: scale(1.18) rotate(45deg);
+    }
+
+    .cursor-root.fire .crosshair {
+      transform: scale(1.4);
+    }
+
+    .cursor-root.hot.fire .crosshair {
+      transform: scale(1.4) rotate(45deg);
+    }
+
+    .coords {
+      position: absolute;
+      left: 0;
+      top: 0;
+      min-width: 104px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font: 500 11px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-variant-numeric: tabular-nums;
+      white-space: pre;
+      color: var(--label-fg);
+      background: var(--label-bg);
+      border: 1px solid var(--label-border);
+      backdrop-filter: blur(4px);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      html, body, body *, canvas, .links a, .theme-toggle {
+        cursor: none !important;
+      }
+    }
+
+    @media (hover: none), (pointer: coarse) {
+      .cursor-root { display: none; }
     }
 
     .content {
@@ -71,26 +179,46 @@
       pointer-events: none;
     }
 
-    .eyebrow {
-      font-size: 13px;
-      color: var(--muted);
-      margin: 0 0 14px;
-      letter-spacing: .02em;
-    }
-
     h1 {
       font-size: clamp(32px, 6vw, 52px);
       margin: 0 0 16px;
       font-weight: 600;
       letter-spacing: -0.02em;
+      color: var(--fg);
+      transition: color .35s ease;
     }
 
-    p.bio {
+    /* typewriter caret: sits on the text baseline, net-zero width so nothing shifts */
+    .caret {
+      display: inline-block;
+      width: 3px;
+      height: 0.72em;
+      margin-left: 2px;
+      margin-right: -5px;
+      vertical-align: baseline;
+      border-radius: 2px;
+      background: var(--accent);
+      animation: blink 0.9s steps(1) infinite;
+    }
+
+    .caret.hidden {
+      visibility: hidden;
+      animation: none;
+    }
+
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    p.bio,
+    i.bio {
       max-width: 520px;
-      color: #d4d4d8;
+      color: var(--bio);
       line-height: 1.6;
       font-size: 16px;
       margin: 0 0 28px;
+      transition: color .35s ease;
     }
 
     .links {
@@ -102,18 +230,18 @@
     }
 
     .links a {
-      color: white;
+      color: var(--icon);
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border-radius: 10px;
       transition: color .15s, border-color .15s, transform .15s;
     }
 
     .links a:hover {
-      color: #bfe0ff;
+      color: var(--icon-hover);
       border-color: var(--accent);
       transform: translateY(-2px);
     }
@@ -130,6 +258,48 @@
       font-size: 12px;
       color: var(--muted);
       pointer-events: none;
+      transition: color .35s ease;
+    }
+
+    /* ---------- Theme toggle (top right) ---------- */
+    .theme-toggle {
+      position: fixed;
+      top: calc(16px + env(safe-area-inset-top, 0px));
+      right: 16px;
+      z-index: 5;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      border: 1px solid var(--toggle-border);
+      background: var(--toggle-bg);
+      color: var(--fg);
+      cursor: pointer;
+      padding: 0;
+      transition: background .2s, border-color .2s, color .2s, transform .2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--toggle-hover-bg);
+      border-color: var(--accent);
+      color: var(--icon-hover);
+      transform: translateY(-1px);
+    }
+
+    .theme-toggle:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .theme-toggle svg {
+      animation: spin-in .4s ease;
+    }
+
+    @keyframes spin-in {
+      from { transform: rotate(-90deg) scale(.6); opacity: 0; }
+      to { transform: rotate(0) scale(1); opacity: 1; }
     }
 
     @media (max-width:480px) {
@@ -140,19 +310,162 @@
         text-align: center;
       }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .caret { animation: none; }
+      .theme-toggle svg { animation: none; }
+    }
   </style>
 </head>
 
 <body>
   <div id="root"></div>
   <script>
-    const { useEffect, useRef, createElement: h } = React;
+    const { useEffect, useRef, useState, createElement: h } = React;
+
+    const NAME = 'Sudarshan Sawandkar';
+    const TYPE_DELAY = 350;   // ms before typing starts
+    const TYPE_SPEED = 85;    // ms per character
+
+    /* Canvas palettes for each theme */
+    const PALETTES = {
+      dark: {
+        particle: 'rgba(212,212,216,0.85)',
+        line: (a) => `rgba(161,161,170,${a * 0.28})`,
+        lit: (s) => `rgba(${210 - 40 * s},${232 - 10 * s},255,${s})`,
+        halo: (g) => `rgba(150,205,255,${g * 0.4})`,
+        core: (g) => `rgba(255,255,255,${0.85 + g * 0.15})`
+      },
+      light: {
+        particle: 'rgba(51,65,85,0.75)',
+        line: (a) => `rgba(71,85,105,${a * 0.35})`,
+        lit: (s) => `rgba(${59 - 22 * s},${130 - 31 * s},246,${s})`,
+        halo: (g) => `rgba(59,130,246,${g * 0.35})`,
+        core: (g) => `rgba(29,78,216,${0.85 + g * 0.15})`
+      }
+    };
+
+    function getInitialTheme() {
+      try {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'light' || saved === 'dark') return saved;
+      } catch (e) { /* storage unavailable */ }
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
+        ? 'light' : 'dark';
+    }
+
+    function ThemeIcon({ theme }) {
+      // dark mode shows a sun (click -> light); light mode shows a moon (click -> dark)
+      if (theme === 'dark') {
+        return h('svg', { viewBox: '0 0 24 24', width: 22, height: 22, fill: 'none', shapeRendering: 'geometricPrecision' },
+          h('circle', { cx: 12, cy: 12, r: 4.2, stroke: 'currentColor', strokeWidth: 1.9 }),
+          h('path', {
+            d: 'M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6',
+            stroke: 'currentColor', strokeWidth: 1.9, strokeLinecap: 'round'
+          })
+        );
+      }
+      return h('svg', { viewBox: '0 0 24 24', width: 22, height: 22, fill: 'none', shapeRendering: 'geometricPrecision' },
+        h('path', {
+          d: 'M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z',
+          stroke: 'currentColor', strokeWidth: 1.9, strokeLinecap: 'round', strokeLinejoin: 'round'
+        })
+      );
+    }
+
+    function Crosshair() {
+      const rootRef = useRef(null);
+      const labelRef = useRef(null);
+
+      useEffect(() => {
+        const root = rootRef.current;
+        const label = labelRef.current;
+        const pad = (n) => String(Math.round(n)).padStart(4, ' ');
+
+        function onMove(e) {
+          const x = e.clientX, y = e.clientY;
+          root.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+          label.textContent = `X ${pad(x)}\nY ${pad(y)}`;
+          // flip the label so it never runs off-screen
+          const tx = x > window.innerWidth - 150 ? -(26 + 104) : 26;
+          const ty = y > window.innerHeight - 70 ? -(26 + 40) : 26;
+          label.style.transform = `translate(${tx}px, ${ty}px)`;
+          root.classList.add('visible');
+          root.classList.toggle('hot', !!(e.target.closest && e.target.closest('a, button')));
+        }
+        function onLeave() { root.classList.remove('visible'); }
+        function onDown() { root.classList.add('fire'); }
+        function onUp() { root.classList.remove('fire'); }
+
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseleave', onLeave);
+        document.addEventListener('mousedown', onDown);
+        document.addEventListener('mouseup', onUp);
+        return () => {
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseleave', onLeave);
+          document.removeEventListener('mousedown', onDown);
+          document.removeEventListener('mouseup', onUp);
+        };
+      }, []);
+
+      const bar = (x, y, w, hh) => h('rect', { x, y, width: w, height: hh, rx: 0.5 });
+      return h('div', { className: 'cursor-root', ref: rootRef, 'aria-hidden': 'true' },
+        h('svg', { className: 'crosshair', viewBox: '0 0 48 48', shapeRendering: 'crispEdges' },
+          bar(23, 5, 2, 12),    // top
+          bar(23, 31, 2, 12),   // bottom
+          bar(5, 23, 12, 2),    // left
+          bar(31, 23, 12, 2),   // right
+          bar(23, 23, 2, 2)     // center dot
+        ),
+        h('div', { className: 'coords', ref: labelRef }, 'X    0\nY    0')
+      );
+    }
 
     function Page() {
       const canvasRef = useRef(null);
       const particlesRef = useRef([]);
       const mouseRef = useRef({ x: -9999, y: -9999 });
 
+      /* ---------- Theme ---------- */
+      const [theme, setTheme] = useState(getInitialTheme);
+      const paletteRef = useRef(PALETTES[theme]);
+
+      useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+        paletteRef.current = PALETTES[theme];
+        try { localStorage.setItem('theme', theme); } catch (e) { /* ignore */ }
+      }, [theme]);
+
+      const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
+
+      /* ---------- Typewriter ---------- */
+      const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const [count, setCount] = useState(reduceMotion ? NAME.length : 0);
+      const [caretOn, setCaretOn] = useState(true);
+
+      useEffect(() => {
+        if (reduceMotion) { setCaretOn(false); return; }
+        let interval;
+        const start = setTimeout(() => {
+          interval = setInterval(() => {
+            setCount((c) => {
+              if (c >= NAME.length) { clearInterval(interval); return c; }
+              return c + 1;
+            });
+          }, TYPE_SPEED);
+        }, TYPE_DELAY);
+        return () => { clearTimeout(start); clearInterval(interval); };
+      }, []);
+
+      // hide the caret shortly after typing finishes
+      useEffect(() => {
+        if (count < NAME.length) return;
+        const t = setTimeout(() => setCaretOn(false), 2200);
+        return () => clearTimeout(t);
+      }, [count]);
+
+      /* ---------- Particle network ---------- */
       useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
@@ -205,7 +518,7 @@
           fireWave(t.clientX - rect.left, t.clientY - rect.top);
         }, { passive: true });
 
-        const WAVE_SPEED = 900;   // px per second — faster wave
+        const WAVE_SPEED = 900;   // px per second
         const WAVE_BAND = 46;     // thickness of the lit band
         const WAVE_LIFE = 1300;   // ms until a wave fully fades
         const MAX_PARTICLES = 180;
@@ -234,6 +547,7 @@
 
         let raf, last = performance.now();
         function tick(now) {
+          const pal = paletteRef.current; // always current theme
           const dt = Math.min(now - last, 40); last = now;
           const dtSec = dt / 1000;
           ctx.clearRect(0, 0, w, h);
@@ -287,11 +601,10 @@
               }
 
               if (lit > 0.02) {
-                const s = Math.min(lit, 1);
-                ctx.strokeStyle = `rgba(${210 - 40 * s},${232 - 10 * s},255,${s})`;
+                ctx.strokeStyle = pal.lit(Math.min(lit, 1));
                 ctx.lineWidth = 1.4;
               } else {
-                ctx.strokeStyle = `rgba(161,161,170,${baseAlpha * 0.28})`;
+                ctx.strokeStyle = pal.line(baseAlpha);
                 ctx.lineWidth = 1;
               }
               ctx.beginPath();
@@ -304,14 +617,12 @@
             const glow = Math.min(p.glow, 1);
             if (glow > 0.03) {
               ctx.beginPath();
-              ctx.fillStyle = `rgba(150,205,255,${glow * 0.4})`;
+              ctx.fillStyle = pal.halo(glow);
               ctx.arc(p.x, p.y, p.r + glow * 4.5, 0, Math.PI * 2);
               ctx.fill();
             }
             ctx.beginPath();
-            ctx.fillStyle = glow > 0.03
-              ? `rgba(255,255,255,${0.85 + glow * 0.15})`
-              : 'rgba(212,212,216,0.85)';
+            ctx.fillStyle = glow > 0.03 ? pal.core(glow) : pal.particle;
             ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
             ctx.fill();
           }
@@ -330,23 +641,118 @@
       }, []);
 
       const icons = {
-        LinkedIn: h('svg', { viewBox: '0 0 24 24', width: 50, height: 50, fill: 'none', shapeRendering: 'geometricPrecision' },
-          h('rect', { x: 2.2, y: 2.2, width: 19.6, height: 19.6, rx: 5, stroke: 'currentColor', strokeWidth: 2 }),
-          h('circle', { cx: 7.5, cy: 7.8, r: 1.5, fill: 'currentColor' }),
-          h('path', { d: 'M7.5 11v6M11.2 17v-3.4c0-1.5.9-2.6 2.3-2.6s2 1 2 2.5V17M11.2 11v6', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' })
+        LinkedIn: h('svg', {
+          viewBox: '0 0 24 24',
+          width: 42,
+          height: 42,
+          fill: 'none',
+          shapeRendering: 'geometricPrecision'
+        },
+          h('rect', {
+            x: 2, y: 2, width: 20, height: 20, rx: 5,
+            stroke: 'currentColor', strokeWidth: 1.6
+          }),
+          h('circle', {
+            cx: 7.2, cy: 7.4, r: 1.05,
+            fill: 'currentColor'
+          }),
+          h('path', {
+            d: 'M7.2 10.5V17 M11 17v-3.4c0-1.8 1-3.1 2.6-3.1s2.4 1.1 2.4 3V17 M11 10.7V17',
+            stroke: 'currentColor',
+            strokeWidth: 1.7,
+            strokeLinecap: 'round',
+            strokeLinejoin: 'round'
+          })
         ),
-        Gmail: h('svg', { viewBox: '0 0 24 24', width: 24, height: 24, fill: 'none', shapeRendering: 'geometricPrecision' },
-          h('circle', { cx: 12, cy: 12, r: 9, stroke: 'currentColor', strokeWidth: 2 }),
-          h('rect', { x: 6, y: 8.5, width: 12, height: 7.5, rx: 1.4, stroke: 'currentColor', strokeWidth: 2, strokeLinejoin: 'round' }),
-          h('path', { d: 'M6.6 9.2l5.4 4 5.4-4', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' })
+        Gmail: h('svg', {
+          viewBox: '0 0 24 24',
+          width: 42,
+          height: 42,
+          fill: 'none',
+          shapeRendering: 'geometricPrecision'
+        },
+          h('rect', {
+            x: 2.5, y: 4.5, width: 19, height: 15, rx: 2.5,
+            stroke: 'currentColor',
+            strokeWidth: 1.6
+          }),
+          h('path', {
+            d: 'M3.5 7 12 13.2 20.5 7',
+            stroke: 'currentColor',
+            strokeWidth: 1.7,
+            strokeLinecap: 'round',
+            strokeLinejoin: 'round'
+          }),
+          h('path', {
+            d: 'M3.5 7v10.5M20.5 7v10.5',
+            stroke: 'currentColor',
+            strokeWidth: 1.6,
+            strokeLinecap: 'round'
+          })
         ),
+        // CodeChef: h('svg', {
+        //   viewBox: '0 0 24 24',
+        //   width: 42,
+        //   height: 42,
+        //   fill: 'none',
+        //   shapeRendering: 'geometricPrecision'
+        // },
+        //   h('rect', {
+        //     x: 2, y: 2, width: 20, height: 20, rx: 5,
+        //     stroke: 'currentColor', strokeWidth: 1.6
+        //   }),
+        //   h('path', {
+        //     d: 'M7 13.5a3 3 0 0 1 .4-5.9A4.7 4.7 0 0 1 12 5.2a4.7 4.7 0 0 1 4.6 2.4 3 3 0 0 1 .4 5.9V16H7v-2.5Z',
+        //     stroke: 'currentColor',
+        //     strokeWidth: 1.6,
+        //     strokeLinecap: 'round',
+        //     strokeLinejoin: 'round'
+        //   }),
+        //   h('path', {
+        //     d: 'M7 18.3h10M9 16v2.3M15 16v2.3',
+        //     stroke: 'currentColor',
+        //     strokeWidth: 1.6,
+        //     strokeLinecap: 'round'
+        //   })
+        // ),
+        // LeetCode: h('svg', {
+        //   viewBox: '0 0 24 24',
+        //   width: 42,
+        //   height: 42,
+        //   fill: 'none',
+        //   shapeRendering: 'geometricPrecision'
+        // },
+        //   h('rect', {
+        //     x: 2, y: 2, width: 20, height: 20, rx: 5,
+        //     stroke: 'currentColor', strokeWidth: 1.6
+        //   }),
+        //   h('path', {
+        //     d: 'M11.1 6.1 6.8 11.8l4.3 5.8 M12.1 8.3l4.2 3.5-4.2 3.5 M10.1 11.8h7.1',
+        //     stroke: 'currentColor',
+        //     strokeWidth: 1.7,
+        //     strokeLinecap: 'round',
+        //     strokeLinejoin: 'round'
+        //   })
+        // ),
       };
 
       return h(React.Fragment, null,
         h('canvas', { ref: canvasRef }),
+        h(Crosshair),
+        h('button', {
+          className: 'theme-toggle',
+          onClick: toggleTheme,
+          'aria-label': theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode',
+          title: theme === 'dark' ? 'Light mode' : 'Dark mode'
+        }, h(ThemeIcon, { key: theme, theme })),
         h('div', { className: 'content' },
-          // h('p', {className:'eyebrow'}, 'sudarshansb143@gmail.com'),
-          h('h1', null, 'Sudarshan Sawandkar'),
+          // Typewriter heading: the not-yet-typed remainder is rendered invisibly
+          // so the heading keeps its final width and nothing jumps around.
+          h('h1', { 'aria-label': NAME },
+            h('span', { 'aria-hidden': 'true' }, NAME.slice(0, count)),
+            h('span', { className: 'caret' + (caretOn ? '' : ' hidden'), 'aria-hidden': 'true' }),
+            h('span', { style: { visibility: 'hidden' }, 'aria-hidden': 'true' }, NAME.slice(count))
+          ),
           h('i', { className: 'bio' },
             "Software Engineer "
           ),
@@ -366,7 +772,6 @@
           )
         ),
         h('div', { className: 'foot' },
-          // h('span', null, 'tmyourhandle'),
           h('span', null, '\u00A9 2026 Sudarshan Sawandkar')
         )
       );
